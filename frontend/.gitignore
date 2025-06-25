@@ -40,3 +40,21 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment variables file (important to avoid committing secrets)
+.env
+
+# Backend build folders (if any, e.g. compiled JS or temporary files)
+# For example, if you use `build` folder or something else, add it here
+
+# Ignore your frontend dist folder in the frontend directory specifically
+/frontend/dist
+
+# If you have any local environment override files or secrets in backend
+/backend/.env
+
+# Sometimes lock files in node_modules can be ignored but generally commit package-lock.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
