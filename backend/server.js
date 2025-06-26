@@ -1,4 +1,10 @@
 require('dotenv').config();
+console.log('All environment variables:', process.env);
+const fs = require('fs');
+
+console.log('.env contents:', fs.readFileSync('.env', 'utf8'));
+console.log('Loaded MONGODB_URI:', process.env.MONGODB_URI);
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -9,8 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+  
 })
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log(err));
@@ -22,23 +27,23 @@ const Recipe = mongoose.model('Recipe', {
   imageUrl: String
 });
 
-app.get('/recipes', async (req, res) => {
+app.get('/api/recipes', async (req, res) => {
   const recipes = await Recipe.find();
   res.json(recipes);
 });
 
-app.post('/recipes', async (req, res) => {
+app.post('/api/recipes', async (req, res) => {
   const newRecipe = new Recipe(req.body);
   await newRecipe.save();
   res.json(newRecipe);
 });
 
-app.delete('/recipes/:id', async (req, res) => {
+app.delete('/api/recipes/:id', async (req, res) => {
   await Recipe.findByIdAndDelete(req.params.id);
   res.json({ message: 'Recipe deleted' });
 });
 
-app.put('/recipes/:id', async (req, res) => {
+app.put('/api/recipes/:id', async (req, res) => {
   try {
     const updatedRecipe = await Recipe.findByIdAndUpdate(
       req.params.id,
