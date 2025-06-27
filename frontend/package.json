@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng build --configuration production && serve -s dist/frontend",
+    "start": "npx ng build --configuration production && npx serve -s dist/frontend",
     "build": "ng build",
     "serve-prod": "http-server dist/frontend -p 4300",
     "watch": "ng build --watch --configuration development",
