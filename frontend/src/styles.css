@@ -16,7 +16,9 @@ main {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   max-width: 800px;
+  width: 95%; /* Allows shrinking on smaller screens */
   margin: 2rem auto;
+  box-sizing: border-box;
 }
 
 /* Buttons */
@@ -57,3 +59,23 @@ label, h1, h2, h3 {
   margin-bottom: 0.5rem;
   color: #000;
 }
+
+/* Mobile Friendly Styles */
+@media (max-width: 600px) {
+  main {
+    padding: 1rem;
+  }
+
+  input[type="text"],
+  textarea,
+  button {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px; /* Slightly smaller for small screens */
+  }
+
+  label, h1, h2, h3 {
+    font-size: 18px; /* Slightly smaller headings for small screens */
+  }
+}
+
