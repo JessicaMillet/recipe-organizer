@@ -1,35 +1,40 @@
 <main>
-  <h2 style="word-break: break-word;">Recipe Organizer</h2>
+  <h2>Recipe Organizer</h2>
 
   <form (submit)="addRecipe(); $event.preventDefault()">
-    <input [(ngModel)]="newRecipe.title" placeholder="Title" name="title" required>
-    <input [(ngModel)]="newRecipe.ingredients" placeholder="Ingredients" name="ingredients" required>
-    <input [(ngModel)]="newRecipe.instructions" placeholder="Instructions" name="instructions" required>
-    <input [(ngModel)]="newRecipe.imageUrl" placeholder="Image URL" name="imageUrl">
+    <input [(ngModel)]="newRecipe.title" placeholder="Title" name="title" required />
+    <input [(ngModel)]="newRecipe.ingredients" placeholder="Ingredients" name="ingredients" required />
+    <input [(ngModel)]="newRecipe.instructions" placeholder="Instructions" name="instructions" required />
+    <input [(ngModel)]="newRecipe.imageUrl" placeholder="Image URL" name="imageUrl" />
     <button type="submit">Add Recipe</button>
   </form>
 
-  <ul>
+  <ul style="list-style-type: none; padding: 0;">
     <li *ngFor="let recipe of recipes">
       <div *ngIf="editingId === recipe._id; else viewMode">
-        <input [(ngModel)]="editRecipe.title" placeholder="Title">
-        <input [(ngModel)]="editRecipe.ingredients" placeholder="Ingredients">
-        <input [(ngModel)]="editRecipe.instructions" placeholder="Instructions">
-        <input [(ngModel)]="editRecipe.imageUrl" placeholder="Image URL">
-        <button (click)="updateRecipe(editRecipe)">Save</button>
-        <button (click)="cancelEdit()">Cancel</button>
+        <input [(ngModel)]="editRecipe.title" placeholder="Title" />
+        <input [(ngModel)]="editRecipe.ingredients" placeholder="Ingredients" />
+        <input [(ngModel)]="editRecipe.instructions" placeholder="Instructions" />
+        <input [(ngModel)]="editRecipe.imageUrl" placeholder="Image URL" />
+        <div class="button-group">
+          <button (click)="updateRecipe(editRecipe)">Save</button>
+          <button (click)="cancelEdit()">Cancel</button>
+        </div>
       </div>
 
       <ng-template #viewMode>
-        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-          <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" alt="Recipe Image" style="max-width: 300px; height: auto; object-fit: cover; margin-right: 10px;">
-          <h3 style="margin: 0;">{{recipe.title}}</h3>
+        <div class="recipe-entry">
+          <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" alt="Recipe Image" />
+          <div class="recipe-text">
+            <h3>{{ recipe.title }}</h3>
+            <p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
+            <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+            <div class="button-group">
+              <button (click)="startEdit(recipe)">Edit</button>
+              <button (click)="deleteRecipe(recipe._id!)">Delete</button>
+            </div>
+          </div>
         </div>
-
-        <p><strong>Ingredients:</strong> {{recipe.ingredients}}</p>
-        <p><strong>Instructions:</strong> {{recipe.instructions}}</p>
-        <button (click)="startEdit(recipe)">Edit</button>
-        <button (click)="deleteRecipe(recipe._id!)">Delete</button>
       </ng-template>
     </li>
   </ul>

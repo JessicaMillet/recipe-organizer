@@ -15,7 +15,7 @@ export interface Recipe {
   providedIn: 'root'
 })
 export class RecipeService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl + '/recipes';
 
   constructor(private http: HttpClient) {}
 

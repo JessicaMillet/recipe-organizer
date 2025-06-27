@@ -12,7 +12,9 @@ const app = express();
 // Allow requests only from my deployed frontend and localhost for dev
 const allowedOrigins = [
   'https://recipe-organizer-production-7491.up.railway.app', // My actual deployed frontend URL
-  'http://localhost:4200'                    // Allow local Angular dev server
+  'http://localhost:4200',                    // Allow local Angular dev server
+  'http://192.168.1.239:4200',
+  'http://192.168.1.239:5000'
 ];
 
 app.use(cors({
