@@ -7,7 +7,7 @@
   <input type="text" [(ngModel)]="searchTerm" placeholder="Search by title" name="search" />
 
   <!-- Add recipe form -->
-  <form #form="ngForm" (submit)="addRecipe(); $event.preventDefault()">
+  <form #recipeForm="ngForm" (ngSubmit)="addRecipe(recipeForm)">
     <input [(ngModel)]="newRecipe.title" name="title" placeholder="Title" required #title="ngModel" />
     <div *ngIf="title.invalid && title.touched" class="error">
       Title is required.
@@ -26,7 +26,7 @@
     </div>
 
     <input [(ngModel)]="newRecipe.imageUrl" name="imageUrl" placeholder="Image URL" />
-    <button type="submit" [disabled]="form.invalid">Add Recipe</button>
+    <button type="submit" [disabled]="recipeForm.invalid">Add Recipe</button>
   </form>
 
   <!-- List of recipes filtered by search -->

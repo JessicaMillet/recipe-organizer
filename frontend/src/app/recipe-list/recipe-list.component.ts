@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Recipe, RecipeService } from '../recipe.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { RecipeFilterPipe } from '../recipe-filter-pipe';
 
 @Component({
@@ -21,7 +21,7 @@ export class RecipeListComponent implements OnInit {
   isLoggedIn: boolean = false;
   loading = false;
 
-  constructor(private recipeService: RecipeService, public router: Router) {}
+  constructor(private recipeService: RecipeService, public router: Router) { }
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
@@ -58,8 +58,7 @@ export class RecipeListComponent implements OnInit {
     );
   }
 
-  addRecipe(): void {
-    console.log('Add button clicked. Recipe:', this.newRecipe);
+  addRecipe(form: NgForm): void {
     if (!this.newRecipe.title || !this.newRecipe.ingredients || !this.newRecipe.instructions) {
       console.warn('Missing required fields.');
       return;
@@ -68,7 +67,13 @@ export class RecipeListComponent implements OnInit {
     this.recipeService.addRecipe(this.newRecipe).subscribe(
       (res) => {
         console.log('Recipe added:', res);
+
+        // Reset the recipe object
         this.newRecipe = { title: '', ingredients: '', instructions: '', imageUrl: '' };
+
+        //  Reset the form and validation state
+        form.resetForm();
+
         this.loadRecipes();
       },
       (error) => {
