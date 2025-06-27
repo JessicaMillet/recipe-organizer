@@ -19,6 +19,8 @@ main {
   width: 95%; /* Allows shrinking on smaller screens */
   margin: 2rem auto;
   box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Buttons */
@@ -32,6 +34,8 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin: 0.5rem 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 button:hover {
@@ -58,24 +62,38 @@ label, h1, h2, h3 {
   font-weight: 600;
   margin-bottom: 0.5rem;
   color: #000;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  hyphens: auto;
 }
 
 /* Mobile Friendly Styles */
 @media (max-width: 600px) {
   main {
-    padding: 1rem;
+    padding: 0.8rem;
+    max-width: 100%; /* Give full width for tiny screens */
+    box-sizing: border-box;
+  }
+
+  h1, h2, h3, label {
+    font-size: 18px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    hyphens: auto;
   }
 
   input[type="text"],
   textarea,
   button {
     width: 100%;
-    box-sizing: border-box;
-    font-size: 16px; /* Slightly smaller for small screens */
+    font-size: 16px;
   }
 
-  label, h1, h2, h3 {
-    font-size: 18px; /* Slightly smaller headings for small screens */
+  img {
+    max-width: 100%;
+    height: auto;
   }
 }
 
