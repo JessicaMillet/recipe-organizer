@@ -21,88 +21,106 @@ export class RecipeListComponent implements OnInit {
   isLoggedIn: boolean = false;
   loading = false;
 
-  constructor(private recipeService: RecipeService, public router: Router) { }
+  constructor(private recipeService: RecipeService, public router: Router) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
     this.isLoggedIn = !!token;
+    console.log('Token exists:', this.isLoggedIn);
 
     if (!this.isLoggedIn) {
       alert('Please login to view recipes.');
       this.router.navigate(['/login']);
-      return; //  Prevent loading data if not logged in
+      return;
     }
 
-    this.loadRecipes(); //  Properly call outside method
+    this.loadRecipes();
   }
 
   goToLogin(): void {
+    console.log('Redirecting to login...');
     this.router.navigate(['/login']);
   }
 
   loadRecipes(): void {
     this.loading = true;
+    console.log('Loading recipes...');
     this.recipeService.getRecipes().subscribe(
       (data) => {
         this.recipes = data;
+        console.log('Recipes loaded:', data);
         this.loading = false;
       },
       (error) => {
-        console.error('Error fetching recipes', error);
+        console.error('Error fetching recipes:', error);
         this.loading = false;
       }
     );
   }
 
   addRecipe(): void {
-    if (!this.newRecipe.title || !this.newRecipe.ingredients || !this.newRecipe.instructions) return;
+    console.log('Add button clicked. Recipe:', this.newRecipe);
+    if (!this.newRecipe.title || !this.newRecipe.ingredients || !this.newRecipe.instructions) {
+      console.warn('Missing required fields.');
+      return;
+    }
 
     this.recipeService.addRecipe(this.newRecipe).subscribe(
-      () => {
+      (res) => {
+        console.log('Recipe added:', res);
         this.newRecipe = { title: '', ingredients: '', instructions: '', imageUrl: '' };
         this.loadRecipes();
       },
       (error) => {
-        console.error('Error adding recipe', error);
+        console.error('Error adding recipe:', error);
       }
     );
   }
 
   startEdit(recipe: Recipe): void {
+    console.log('Editing recipe:', recipe);
     this.editingId = recipe._id || null;
     this.editRecipe = { ...recipe };
   }
 
   cancelEdit(): void {
+    console.log('Edit canceled');
     this.editingId = null;
   }
 
   updateRecipe(): void {
     if (!this.editingId) return;
 
+    console.log('Updating recipe ID:', this.editingId, 'With data:', this.editRecipe);
     this.recipeService.updateRecipe(this.editingId, this.editRecipe).subscribe(
-      () => {
+      (res) => {
+        console.log('Recipe updated:', res);
         this.editingId = null;
         this.loadRecipes();
       },
       (error) => {
-        console.error('Error updating recipe', error);
+        console.error('Error updating recipe:', error);
       }
     );
   }
 
   deleteRecipe(id: string): void {
     if (confirm('Are you sure you want to delete this recipe?')) {
+      console.log('Deleting recipe with ID:', id);
       this.recipeService.deleteRecipe(id).subscribe(
-        () => this.loadRecipes(),
+        (res) => {
+          console.log('Recipe deleted:', res);
+          this.loadRecipes();
+        },
         (error) => {
-          console.error('Error deleting recipe', error);
+          console.error('Error deleting recipe:', error);
         }
       );
     }
   }
 
   logout(): void {
+    console.log('Logging out...');
     localStorage.removeItem('token');
     this.isLoggedIn = false;
     this.router.navigate(['/login']);

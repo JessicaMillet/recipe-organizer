@@ -31,7 +31,7 @@
 
   <!-- List of recipes filtered by search -->
   <ul style="list-style-type: none; padding: 0;">
-    <li *ngFor="let recipe of recipes | filter:searchTerm">
+    <li *ngFor="let recipe of recipes | recipeFilter:searchTerm">
 
       <!-- Edit mode -->
       <div *ngIf="editingId === recipe._id; else viewMode">

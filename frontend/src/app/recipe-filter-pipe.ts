@@ -1,14 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Recipe } from './recipe.service';
 
 @Pipe({
-  name: 'filter',
-  standalone: true
+  name: 'recipeFilter' // <<< Make sure this name matches!
 })
 export class RecipeFilterPipe implements PipeTransform {
-  transform(items: any[], searchTerm: string): any[] {
-    if (!items || !searchTerm) return items;
-    return items.filter(item =>
-      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  transform(recipes: Recipe[], searchTerm: string): Recipe[] {
+    if (!recipes || !searchTerm) return recipes;
+    return recipes.filter(recipe =>
+      recipe.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
 }

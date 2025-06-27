@@ -25,7 +25,8 @@ export class LoginComponent {
         this.router.navigate(['/recipes']); // Navigate to recipe list
       },
       error: (err) => {
-        alert('Login failed: ' + err.error.message);
+        console.error('Login error:', err); // ← log entire error
+        alert('Login failed: ' + (err.error?.message || 'Server unreachable or unexpected error.'));
       }
     });
   }
