@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';  // import environment
 
 export interface Recipe {
   _id?: string;
@@ -14,7 +15,7 @@ export interface Recipe {
   providedIn: 'root'
 })
 export class RecipeService {
-  private apiUrl = 'https://recipe-organizer-production-7491.up.railway.app/api';
+  private apiUrl = environment.apiUrl;  // use environment.apiUrl here
 
   constructor(private http: HttpClient) { }
 
