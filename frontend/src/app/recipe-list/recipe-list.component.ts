@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Recipe, RecipeService } from '../recipe.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RecipeService, Recipe } from '../recipe.service';
-import { Router } from '@angular/router';
 import { RecipeFilterPipe } from '../recipe-filter-pipe';
-
 
 @Component({
   selector: 'app-recipe-list',
-  standalone: true,
   templateUrl: './recipe-list.component.html',
   styleUrls: ['./recipe-list.component.css'],
-  imports: [CommonModule, FormsModule, RecipeFilterPipe]
+  standalone: true,
+  imports: [CommonModule, FormsModule, RecipeFilterPipe],
 })
 export class RecipeListComponent implements OnInit {
   recipes: Recipe[] = [];
@@ -19,65 +18,93 @@ export class RecipeListComponent implements OnInit {
   editRecipe: Recipe = { title: '', ingredients: '', instructions: '', imageUrl: '' };
   editingId: string | null = null;
   searchTerm: string = '';
+  isLoggedIn: boolean = false;
+  loading = false;
 
-  constructor(
-    private recipeService: RecipeService,
-    private router: Router
-  ) { }
+  constructor(private recipeService: RecipeService, public router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const token = localStorage.getItem('token');
-    if (!token) {
+    this.isLoggedIn = !!token;
+
+    if (!this.isLoggedIn) {
       alert('Please login to view recipes.');
       this.router.navigate(['/login']);
-    } else {
-      this.loadRecipes();
+      return; //  Prevent loading data if not logged in
     }
+
+    this.loadRecipes(); //  Properly call outside method
   }
 
-  loadRecipes() {
-    this.recipeService.getRecipes().subscribe({
-      next: (recipes) => this.recipes = recipes,
-      error: (err) => alert('Failed to load recipes: ' + err.message)
-    });
+  goToLogin(): void {
+    this.router.navigate(['/login']);
   }
 
-  addRecipe() {
-    this.recipeService.addRecipe(this.newRecipe).subscribe(() => {
-      this.newRecipe = { title: '', ingredients: '', instructions: '', imageUrl: '' };
-      this.loadRecipes();
-    });
+  loadRecipes(): void {
+    this.loading = true;
+    this.recipeService.getRecipes().subscribe(
+      (data) => {
+        this.recipes = data;
+        this.loading = false;
+      },
+      (error) => {
+        console.error('Error fetching recipes', error);
+        this.loading = false;
+      }
+    );
   }
 
-  deleteRecipe(id: string) {
-    if (confirm('Are you sure you want to delete this recipe?')) {
-      this.recipeService.deleteRecipe(id).subscribe(() => this.loadRecipes());
-    }
+  addRecipe(): void {
+    if (!this.newRecipe.title || !this.newRecipe.ingredients || !this.newRecipe.instructions) return;
+
+    this.recipeService.addRecipe(this.newRecipe).subscribe(
+      () => {
+        this.newRecipe = { title: '', ingredients: '', instructions: '', imageUrl: '' };
+        this.loadRecipes();
+      },
+      (error) => {
+        console.error('Error adding recipe', error);
+      }
+    );
   }
 
-  startEdit(recipe: Recipe) {
-    this.editingId = recipe._id!;
+  startEdit(recipe: Recipe): void {
+    this.editingId = recipe._id || null;
     this.editRecipe = { ...recipe };
   }
 
-  cancelEdit() {
+  cancelEdit(): void {
     this.editingId = null;
   }
 
-  updateRecipe() {
-    if (this.editRecipe._id) {
-      this.recipeService.updateRecipe(this.editRecipe._id, this.editRecipe).subscribe({
-        next: () => {
-          this.editingId = null;
-          this.loadRecipes();
-        },
-        error: (err) => alert('Update failed: ' + err.message)
-      });
+  updateRecipe(): void {
+    if (!this.editingId) return;
+
+    this.recipeService.updateRecipe(this.editingId, this.editRecipe).subscribe(
+      () => {
+        this.editingId = null;
+        this.loadRecipes();
+      },
+      (error) => {
+        console.error('Error updating recipe', error);
+      }
+    );
+  }
+
+  deleteRecipe(id: string): void {
+    if (confirm('Are you sure you want to delete this recipe?')) {
+      this.recipeService.deleteRecipe(id).subscribe(
+        () => this.loadRecipes(),
+        (error) => {
+          console.error('Error deleting recipe', error);
+        }
+      );
     }
   }
 
-  logout() {
+  logout(): void {
     localStorage.removeItem('token');
+    this.isLoggedIn = false;
     this.router.navigate(['/login']);
   }
 }

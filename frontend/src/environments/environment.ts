@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://recipe-organizer-production-7491.up.railway.app/api'
+  apiUrl: 'https://recipe-organizer-production.up.railway.app/api'
+
 };

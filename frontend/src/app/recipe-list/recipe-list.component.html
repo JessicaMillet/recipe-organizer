@@ -1,6 +1,7 @@
-<main>
+<main *ngIf="isLoggedIn; else loginPrompt">
   <h2>Recipe Organizer</h2>
   <button class="logout" (click)="logout()">Logout</button>
+  <div *ngIf="loading">Loading recipes...</div>
 
   <!-- Search box -->
   <input type="text" [(ngModel)]="searchTerm" placeholder="Search by title" name="search" />
@@ -25,7 +26,6 @@
     </div>
 
     <input [(ngModel)]="newRecipe.imageUrl" name="imageUrl" placeholder="Image URL" />
-
     <button type="submit" [disabled]="form.invalid">Add Recipe</button>
   </form>
 
@@ -82,3 +82,9 @@
     </li>
   </ul>
 </main>
+
+<ng-template #loginPrompt>
+  <h2>Recipe Organizer</h2>
+  <button (click)="goToLogin()">Login</button>
+  <p>Please log in to access the Recipe Organizer.</p>
+</ng-template>
