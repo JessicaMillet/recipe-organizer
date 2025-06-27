@@ -1,27 +1,69 @@
 <main>
   <h2>Recipe Organizer</h2>
+  <button class="logout" (click)="logout()">Logout</button>
 
-  <form (submit)="addRecipe(); $event.preventDefault()">
-    <input [(ngModel)]="newRecipe.title" placeholder="Title" name="title" required />
-    <input [(ngModel)]="newRecipe.ingredients" placeholder="Ingredients" name="ingredients" required />
-    <input [(ngModel)]="newRecipe.instructions" placeholder="Instructions" name="instructions" required />
-    <input [(ngModel)]="newRecipe.imageUrl" placeholder="Image URL" name="imageUrl" />
-    <button type="submit">Add Recipe</button>
+  <!-- Search box -->
+  <input type="text" [(ngModel)]="searchTerm" placeholder="Search by title" name="search" />
+
+  <!-- Add recipe form -->
+  <form #form="ngForm" (submit)="addRecipe(); $event.preventDefault()">
+    <input [(ngModel)]="newRecipe.title" name="title" placeholder="Title" required #title="ngModel" />
+    <div *ngIf="title.invalid && title.touched" class="error">
+      Title is required.
+    </div>
+
+    <input [(ngModel)]="newRecipe.ingredients" name="ingredients" placeholder="Ingredients" required
+      #ingredients="ngModel" />
+    <div *ngIf="ingredients.invalid && ingredients.touched" class="error">
+      Ingredients are required.
+    </div>
+
+    <input [(ngModel)]="newRecipe.instructions" name="instructions" placeholder="Instructions" required
+      #instructions="ngModel" />
+    <div *ngIf="instructions.invalid && instructions.touched" class="error">
+      Instructions are required.
+    </div>
+
+    <input [(ngModel)]="newRecipe.imageUrl" name="imageUrl" placeholder="Image URL" />
+
+    <button type="submit" [disabled]="form.invalid">Add Recipe</button>
   </form>
 
+  <!-- List of recipes filtered by search -->
   <ul style="list-style-type: none; padding: 0;">
-    <li *ngFor="let recipe of recipes">
+    <li *ngFor="let recipe of recipes | filter:searchTerm">
+
+      <!-- Edit mode -->
       <div *ngIf="editingId === recipe._id; else viewMode">
-        <input [(ngModel)]="editRecipe.title" placeholder="Title" />
-        <input [(ngModel)]="editRecipe.ingredients" placeholder="Ingredients" />
-        <input [(ngModel)]="editRecipe.instructions" placeholder="Instructions" />
-        <input [(ngModel)]="editRecipe.imageUrl" placeholder="Image URL" />
-        <div class="button-group">
-          <button (click)="updateRecipe(editRecipe)">Save</button>
-          <button (click)="cancelEdit()">Cancel</button>
-        </div>
+        <form #editForm="ngForm"
+          (submit)="updateRecipe(); editForm.control.markAllAsTouched(); $event.preventDefault()">
+          <input [(ngModel)]="editRecipe.title" name="editTitle" placeholder="Title" required #editTitle="ngModel" />
+          <div *ngIf="editTitle.invalid && editTitle.touched" class="error">
+            Title is required.
+          </div>
+
+          <input [(ngModel)]="editRecipe.ingredients" name="editIngredients" placeholder="Ingredients" required
+            #editIngredients="ngModel" />
+          <div *ngIf="editIngredients.invalid && editIngredients.touched" class="error">
+            Ingredients are required.
+          </div>
+
+          <input [(ngModel)]="editRecipe.instructions" name="editInstructions" placeholder="Instructions" required
+            #editInstructions="ngModel" />
+          <div *ngIf="editInstructions.invalid && editInstructions.touched" class="error">
+            Instructions are required.
+          </div>
+
+          <input [(ngModel)]="editRecipe.imageUrl" name="editImageUrl" placeholder="Image URL" />
+
+          <div class="button-group">
+            <button type="submit" [disabled]="editForm.invalid">Save</button>
+            <button type="button" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </form>
       </div>
 
+      <!-- View mode -->
       <ng-template #viewMode>
         <div class="recipe-entry">
           <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" alt="Recipe Image" />
@@ -29,6 +71,7 @@
             <h3>{{ recipe.title }}</h3>
             <p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
             <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
+
             <div class="button-group">
               <button (click)="startEdit(recipe)">Edit</button>
               <button (click)="deleteRecipe(recipe._id!)">Delete</button>

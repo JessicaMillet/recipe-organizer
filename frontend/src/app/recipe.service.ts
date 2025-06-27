@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';
 
 export interface Recipe {
   _id?: string;
@@ -15,23 +14,32 @@ export interface Recipe {
   providedIn: 'root'
 })
 export class RecipeService {
-  private apiUrl = environment.apiUrl + '/recipes';
+  private apiUrl = 'https://recipe-organizer-production-7491.up.railway.app/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-getRecipes(): Observable<Recipe[]> {
-  return this.http.get<Recipe[]>(this.apiUrl);
-}
+  private getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      })
+    };
+  }
 
-addRecipe(recipe: Recipe): Observable<Recipe> {
-  return this.http.post<Recipe>(this.apiUrl, recipe);
-}
+  getRecipes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/recipes`, this.getAuthHeaders());
+  }
 
-updateRecipe(recipe: Recipe): Observable<Recipe> {
-  return this.http.put<Recipe>(`${this.apiUrl}/${recipe._id}`, recipe);
-}
+  addRecipe(recipe: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/recipes`, recipe, this.getAuthHeaders());
+  }
 
-deleteRecipe(id: string): Observable<any> {
-  return this.http.delete(`${this.apiUrl}/${id}`);
-}
+  updateRecipe(id: string, recipe: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/recipes/${id}`, recipe, this.getAuthHeaders());
+  }
+
+  deleteRecipe(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/recipes/${id}`, this.getAuthHeaders());
+  }
 }
