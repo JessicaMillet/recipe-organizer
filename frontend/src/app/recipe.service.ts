@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';  // 👈 or use environment.prod if you're building for production
+import { environment } from '../environments/environment';  // or use environment.prod if you're building for production
 
 export interface Recipe {
   _id?: string;
