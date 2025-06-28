@@ -89,6 +89,15 @@ h3 {
   hyphens: auto;
 }
 
+
+.link-like {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+
+}
+
+
 /* Recipe layout */
 .recipe-entry {
   border: 1px solid #ddd;
@@ -156,4 +165,5 @@ h3 {
     flex-direction: column;
     align-items: center;
   }
+
 }

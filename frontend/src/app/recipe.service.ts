@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../environments/environment';  // import environment
+import { environment } from '../environments/environment';  // 👈 or use environment.prod if you're building for production
 
 export interface Recipe {
   _id?: string;
@@ -15,7 +15,7 @@ export interface Recipe {
   providedIn: 'root'
 })
 export class RecipeService {
-  private apiUrl = environment.apiUrl;  // use environment.apiUrl here
+  private apiUrl = environment.apiUrl;  // ✅ using environment.apiUrl
 
   constructor(private http: HttpClient) { }
 
