@@ -59,6 +59,8 @@ export class RecipeListComponent implements OnInit {
   }
 
   addRecipe(form: NgForm): void {
+    console.log('Add Recipe button clicked');
+
     if (!this.newRecipe.title || !this.newRecipe.ingredients || !this.newRecipe.instructions) {
       console.warn('Missing required fields.');
       return;

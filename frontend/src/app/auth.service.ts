@@ -1,3 +1,4 @@
+import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -17,6 +18,10 @@ export class AuthService {
     }
 
     login(email: string, password: string): Observable<{ token: string }> {
-        return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password });
+        return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password }).pipe(
+            tap(res => {
+                localStorage.setItem('token', res.token); // ✅ Save the token here
+            })
+        );
     }
 }
