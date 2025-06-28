@@ -45,6 +45,11 @@ const User = mongoose.model('User', {
 });
 
 
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'API is working!' });
+});
+
+
 app.post('/api/register', async (req, res) => {
   console.log('Register request body:', req.body);  // Step 1a: Log input for debugging
 
