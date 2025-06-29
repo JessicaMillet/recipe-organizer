@@ -1,20 +1,14 @@
 {
-<<<<<<< HEAD
   "name": "frontend",
   "version": "0.0.0",
-=======
-  "dependencies": {
-    "zone.js": "^0.15.1"
-  },
->>>>>>> 59c59c6518bb18e6ae5498f3ecb72e9a383f5b51
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production",
-<<<<<<< HEAD
     "serve-prod": "http-server dist/frontend -p 4300",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
@@ -43,9 +37,5 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.8.2"
-=======
-    "test": "ng test",
-    "lint": "ng lint"
->>>>>>> 59c59c6518bb18e6ae5498f3ecb72e9a383f5b51
   }
 }
