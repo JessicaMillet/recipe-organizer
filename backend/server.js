@@ -4,6 +4,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const express = require('express');
+const multer = require('multer');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
@@ -17,10 +19,15 @@ const allowedOrigins = [
   'http://192.168.1.239:5000'
 ];
 
+
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com;");
+  res.setHeader("Content-Security-Policy", "default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' https://res.cloudinary.com data:;");
   next();
 });
+
+// Increase body size limit
+app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 app.use(cors({
   origin: allowedOrigins,
@@ -28,12 +35,61 @@ app.use(cors({
   credentials: true
 }));
 
+// Serve static uploads folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use(express.json());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {})
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
+
+
+//const storage = multer.diskStorage({
+//destination: (req, file, cb) => {
+//cb(null, 'uploads/');
+//},
+//filename: (req, file, cb) => {
+//const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+//const ext = path.extname(file.originalname);
+//cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+//}
+//});
+
+
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
+// Configure Cloudinary with my env vars
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Setup Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'recipes',
+    allowed_formats: ['jpg', 'png', 'webp']
+  },
+});
+
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type'));
+    }
+  }
+});
 
 
 const bcrypt = require('bcrypt');
@@ -126,7 +182,7 @@ const Recipe = mongoose.model('Recipe', {
   title: String,
   ingredients: String,
   instructions: String,
-  imageUrl: String
+  imagePath: String
 });
 
 // API routes
@@ -135,10 +191,29 @@ app.get('/api/recipes', authenticateToken, async (req, res) => {
   res.json(recipes);
 });
 
-app.post('/api/recipes', authenticateToken, async (req, res) => {
-  const newRecipe = new Recipe({ ...req.body, userId: req.user.userId });
-  await newRecipe.save();
-  res.json(newRecipe);
+app.post('/api/recipes', authenticateToken, upload.single('image'), async (req, res) => {
+  try {
+    const { title, ingredients, instructions } = req.body;
+    const imagePath = req.file?.path || '';
+
+    const newRecipe = new Recipe({
+      userId: req.user.userId,
+      title,
+      ingredients,
+      instructions,
+      imagePath
+    });
+
+    await newRecipe.save();
+    res.json(newRecipe);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to upload recipe' });
+  }
+
+  console.log('Uploaded file info:', req.file);
+  console.log('Final imagePath:', imagePath);
+  console.log('Cloudinary URL saved to DB:', imagePath);
 });
 
 app.delete('/api/recipes/:id', authenticateToken, async (req, res) => {

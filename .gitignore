@@ -58,6 +58,9 @@ Thumbs.db
 # If you have any local environment override files or secrets in backend
 /backend/.env
 
+/uploads/*
+!/uploads/.gitkeep
+
 # Sometimes lock files in node_modules can be ignored but generally commit package-lock.json
 
 # Logs

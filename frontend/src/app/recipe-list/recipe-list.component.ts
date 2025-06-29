@@ -17,16 +17,21 @@ export class RecipeListComponent implements OnInit {
   newRecipe: Recipe = { title: '', ingredients: '', instructions: '', imageUrl: '' };
   editRecipe: Recipe = { title: '', ingredients: '', instructions: '', imageUrl: '' };
   editingId: string | null = null;
-  searchTerm: string = '';
-  isLoggedIn: boolean = false;
+  searchTerm = '';
+  isLoggedIn = false;
   loading = false;
+  uploading = false;
 
-  constructor(private recipeService: RecipeService, public router: Router) { }
+  imagePreview: string | ArrayBuffer | null = null;
+  imageError: string | null = null;
+
+  selectedFile: File | null = null;
+
+  constructor(private recipeService: RecipeService, private router: Router) { }
 
   ngOnInit(): void {
     const token = localStorage.getItem('token');
     this.isLoggedIn = !!token;
-    console.log('Token exists:', this.isLoggedIn);
 
     if (!this.isLoggedIn) {
       alert('Please login to view recipes.');
@@ -37,18 +42,38 @@ export class RecipeListComponent implements OnInit {
     this.loadRecipes();
   }
 
-  goToLogin(): void {
-    console.log('Redirecting to login...');
-    this.router.navigate(['/login']);
+  onImageSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      const maxSize = 2 * 1024 * 1024;
+
+      if (!allowedTypes.includes(file.type)) {
+        this.imageError = 'Only JPG, PNG, or WebP images are allowed.';
+        return;
+      }
+
+      if (file.size > maxSize) {
+        this.imageError = 'Image is too large. Max 2MB allowed.';
+        return;
+      }
+
+      this.selectedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+        this.imageError = null;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   loadRecipes(): void {
     this.loading = true;
-    console.log('Loading recipes...');
     this.recipeService.getRecipes().subscribe(
       (data) => {
         this.recipes = data;
-        console.log('Recipes loaded:', data);
         this.loading = false;
       },
       (error) => {
@@ -59,49 +84,56 @@ export class RecipeListComponent implements OnInit {
   }
 
   addRecipe(form: NgForm): void {
-    console.log('Add Recipe button clicked');
-
-    if (!this.newRecipe.title || !this.newRecipe.ingredients || !this.newRecipe.instructions) {
-      console.warn('Missing required fields.');
+    if (!this.newRecipe.title || !this.newRecipe.ingredients || !this.newRecipe.instructions || !this.selectedFile) {
+      alert('All fields and an image are required');
       return;
     }
 
-    this.recipeService.addRecipe(this.newRecipe).subscribe(
+    const formData = new FormData();
+    formData.append('title', this.newRecipe.title);
+    formData.append('ingredients', this.newRecipe.ingredients);
+    formData.append('instructions', this.newRecipe.instructions);
+    formData.append('image', this.selectedFile);
+
+    this.uploading = true;
+    this.recipeService.addRecipe(formData).subscribe(
       (res) => {
-        console.log('Recipe added:', res);
-
-        // Reset the recipe object
+        alert('Recipe added successfully!');
         this.newRecipe = { title: '', ingredients: '', instructions: '', imageUrl: '' };
-
-        //  Reset the form and validation state
+        this.imagePreview = null;
+        this.imageError = null;
+        this.selectedFile = null;
         form.resetForm();
-
+        this.uploading = false;
         this.loadRecipes();
       },
       (error) => {
         console.error('Error adding recipe:', error);
+        alert('Failed to add recipe. Please try again.');
+        this.uploading = false;
       }
     );
   }
 
+  getImageUrl(recipe: Recipe): string {
+    if (!recipe.imagePath) return 'assets/default.jpg';
+    if (recipe.imagePath.startsWith('http')) return recipe.imagePath;
+    return `https://res.cloudinary.com/dvfbelg1c/image/upload/recipes/${recipe.imagePath}`;
+  }
+
   startEdit(recipe: Recipe): void {
-    console.log('Editing recipe:', recipe);
     this.editingId = recipe._id || null;
     this.editRecipe = { ...recipe };
   }
 
   cancelEdit(): void {
-    console.log('Edit canceled');
     this.editingId = null;
   }
 
   updateRecipe(): void {
     if (!this.editingId) return;
-
-    console.log('Updating recipe ID:', this.editingId, 'With data:', this.editRecipe);
     this.recipeService.updateRecipe(this.editingId, this.editRecipe).subscribe(
-      (res) => {
-        console.log('Recipe updated:', res);
+      () => {
         this.editingId = null;
         this.loadRecipes();
       },
@@ -113,23 +145,20 @@ export class RecipeListComponent implements OnInit {
 
   deleteRecipe(id: string): void {
     if (confirm('Are you sure you want to delete this recipe?')) {
-      console.log('Deleting recipe with ID:', id);
       this.recipeService.deleteRecipe(id).subscribe(
-        (res) => {
-          console.log('Recipe deleted:', res);
-          this.loadRecipes();
-        },
-        (error) => {
-          console.error('Error deleting recipe:', error);
-        }
+        () => this.loadRecipes(),
+        (error) => console.error('Error deleting recipe:', error)
       );
     }
   }
 
   logout(): void {
-    console.log('Logging out...');
     localStorage.removeItem('token');
     this.isLoggedIn = false;
+    this.router.navigate(['/login']);
+  }
+
+  goToLogin(): void {
     this.router.navigate(['/login']);
   }
 }

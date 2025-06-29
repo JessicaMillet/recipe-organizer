@@ -3,55 +3,46 @@
   <button class="logout" (click)="logout()">Logout</button>
   <div *ngIf="loading">Loading recipes...</div>
 
-  <!-- Search box -->
   <input type="text" [(ngModel)]="searchTerm" placeholder="Search by title" name="search" />
 
-  <!-- Add recipe form -->
   <form #recipeForm="ngForm" (ngSubmit)="addRecipe(recipeForm)">
     <input [(ngModel)]="newRecipe.title" name="title" placeholder="Title" required #title="ngModel" />
-    <div *ngIf="title.invalid && title.touched" class="error">
-      Title is required.
-    </div>
+    <div *ngIf="title.invalid && title.touched" class="error">Title is required.</div>
 
     <input [(ngModel)]="newRecipe.ingredients" name="ingredients" placeholder="Ingredients" required
       #ingredients="ngModel" />
-    <div *ngIf="ingredients.invalid && ingredients.touched" class="error">
-      Ingredients are required.
-    </div>
+    <div *ngIf="ingredients.invalid && ingredients.touched" class="error">Ingredients are required.</div>
 
     <input [(ngModel)]="newRecipe.instructions" name="instructions" placeholder="Instructions" required
       #instructions="ngModel" />
-    <div *ngIf="instructions.invalid && instructions.touched" class="error">
-      Instructions are required.
-    </div>
+    <div *ngIf="instructions.invalid && instructions.touched" class="error">Instructions are required.</div>
 
-    <input [(ngModel)]="newRecipe.imageUrl" name="imageUrl" placeholder="Image URL" />
-    <button type="submit" [disabled]="recipeForm.invalid">Add Recipe</button>
+    <label for="imageUpload" class="upload-btn">
+      <i class="material-icons">upload</i> Upload Image
+    </label>
+    <input type="file" id="imageUpload" accept="image/*" hidden (change)="onImageSelected($event)" />
+
+    <img *ngIf="imagePreview" [src]="imagePreview" alt="Preview" style="max-width: 200px;" />
+    <div *ngIf="imageError" class="error">{{ imageError }}</div>
+
+    <button type="submit" [disabled]="recipeForm.invalid || uploading">
+      {{ uploading ? 'Uploading...' : 'Add Recipe' }}
+    </button>
   </form>
 
-  <!-- List of recipes filtered by search -->
   <ul style="list-style-type: none; padding: 0;">
     <li *ngFor="let recipe of recipes | recipeFilter:searchTerm">
-
-      <!-- Edit mode -->
       <div *ngIf="editingId === recipe._id; else viewMode">
         <form #editForm="ngForm"
           (submit)="updateRecipe(); editForm.control.markAllAsTouched(); $event.preventDefault()">
-          <input [(ngModel)]="editRecipe.title" name="editTitle" placeholder="Title" required #editTitle="ngModel" />
-          <div *ngIf="editTitle.invalid && editTitle.touched" class="error">
-            Title is required.
-          </div>
+          <input [(ngModel)]="editRecipe.title" name="editTitle" required #editTitle="ngModel" />
+          <div *ngIf="editTitle.invalid && editTitle.touched" class="error">Title is required.</div>
 
-          <input [(ngModel)]="editRecipe.ingredients" name="editIngredients" placeholder="Ingredients" required
-            #editIngredients="ngModel" />
-          <div *ngIf="editIngredients.invalid && editIngredients.touched" class="error">
-            Ingredients are required.
-          </div>
+          <input [(ngModel)]="editRecipe.ingredients" name="editIngredients" required #editIngredients="ngModel" />
+          <div *ngIf="editIngredients.invalid && editIngredients.touched" class="error">Ingredients are required.</div>
 
-          <input [(ngModel)]="editRecipe.instructions" name="editInstructions" placeholder="Instructions" required
-            #editInstructions="ngModel" />
-          <div *ngIf="editInstructions.invalid && editInstructions.touched" class="error">
-            Instructions are required.
+          <input [(ngModel)]="editRecipe.instructions" name="editInstructions" required #editInstructions="ngModel" />
+          <div *ngIf="editInstructions.invalid && editInstructions.touched" class="error">Instructions are required.
           </div>
 
           <input [(ngModel)]="editRecipe.imageUrl" name="editImageUrl" placeholder="Image URL" />
@@ -63,15 +54,13 @@
         </form>
       </div>
 
-      <!-- View mode -->
       <ng-template #viewMode>
         <div class="recipe-entry">
-          <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" alt="Recipe Image" />
+          <img [src]="getImageUrl(recipe)" alt="Recipe Image">
           <div class="recipe-text">
             <h3>{{ recipe.title }}</h3>
             <p><strong>Ingredients:</strong> {{ recipe.ingredients }}</p>
             <p><strong>Instructions:</strong> {{ recipe.instructions }}</p>
-
             <div class="button-group">
               <button (click)="startEdit(recipe)">Edit</button>
               <button (click)="deleteRecipe(recipe._id!)">Delete</button>

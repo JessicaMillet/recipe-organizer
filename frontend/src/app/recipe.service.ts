@@ -9,6 +9,7 @@ export interface Recipe {
   ingredients: string;
   instructions: string;
   imageUrl?: string;
+  imagePath?: string;
 }
 
 @Injectable({
@@ -44,7 +45,7 @@ export class RecipeService {
   }
 
   // ADD RECIPE
-  addRecipe(recipe: any): Observable<any> {
+  addRecipe(recipe: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/recipes`, recipe, this.getAuthHeaders());
   }
 
