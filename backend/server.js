@@ -194,7 +194,8 @@ app.get('/api/recipes', authenticateToken, async (req, res) => {
 app.post('/api/recipes', authenticateToken, upload.single('image'), async (req, res) => {
   try {
     const { title, ingredients, instructions } = req.body;
-    const imagePath = req.file?.path || '';
+
+    const imagePath = req.file?.path || '';  // Cloudinary's secure_url is already here
 
     const newRecipe = new Recipe({
       userId: req.user.userId,
@@ -205,15 +206,16 @@ app.post('/api/recipes', authenticateToken, upload.single('image'), async (req, 
     });
 
     await newRecipe.save();
+
+    console.log('Uploaded file info:', req.file);
+    console.log('Final imagePath:', imagePath);
+    console.log('Cloudinary URL saved to DB:', imagePath);
+
     res.json(newRecipe);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Failed to upload recipe' });
   }
-
-  console.log('Uploaded file info:', req.file);
-  console.log('Final imagePath:', imagePath);
-  console.log('Cloudinary URL saved to DB:', imagePath);
 });
 
 app.delete('/api/recipes/:id', authenticateToken, async (req, res) => {
