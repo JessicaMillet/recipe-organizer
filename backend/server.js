@@ -13,11 +13,13 @@ const app = express();
 
 // Allow requests only from my deployed frontend and localhost for dev
 const allowedOrigins = [
-  'https://recipe-organizer-production-7491.up.railway.app', // My actual deployed frontend URL
-  'http://localhost:4200',                    // Allow local Angular dev server
+  'https://jessicamillet.github.io', // GitHub Pages
+  'https://recipe-organizer-production-7491.up.railway.app', // Railway frontend 
+  'http://localhost:4200',
   'http://192.168.1.239:4200',
   'http://192.168.1.239:5000'
 ];
+
 
 
 app.use((req, res, next) => {
@@ -30,10 +32,33 @@ app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+
+app.options('*', cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 // Serve static uploads folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
