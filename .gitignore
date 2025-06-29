@@ -3,6 +3,9 @@
 # Ignore Angular cache in frontend folder
 /frontend/.angular/cache/
 
+# Ignore Angular cache in frontend folder
+/frontend/.angular/cache/
+
 # Compiled output
 /dist
 /tmp
