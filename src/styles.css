@@ -1,1 +1,169 @@
-/* You can add global styles to this file, and also import other style files */
+body {
+  background-color: #3b363a;
+  margin: 0;
+  padding: 0 0.5rem;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  color: #000;
+  line-height: 1.6;
+}
+
+main {
+  background-color: rgb(218, 128, 12);
+  padding: 1.5rem 1.8rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 95%;
+  margin: 2rem auto;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow: visible;
+}
+
+/* Buttons */
+button {
+  font-size: 16px;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  background-color: #5c4a3d;
+  color: #f0e6d2;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 0.4rem auto;
+  width: 90%;
+  max-width: 220px;
+  display: block;
+  box-sizing: border-box;
+}
+
+button:hover {
+  background-color: #7a684f;
+}
+
+/* Button grouping */
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+/* Input fields and textareas */
+input[type="text"],
+textarea {
+  font-size: 18px;
+  padding: 12px 18px;
+  border-radius: 6px;
+  border: 1.5px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0.5rem 0 1rem 0;
+  color: #000;
+  background-color: #fff;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #888;
+  font-style: italic;
+}
+
+/* Labels and headings */
+label,
+h1,
+h2,
+h3 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #000;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  hyphens: auto;
+}
+
+
+.link-like {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+
+}
+
+
+/* Recipe layout */
+.recipe-entry {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 16px;
+}
+
+
+.recipe-entry img {
+  max-width: 250px;
+  width: 100%;
+  height: auto;
+  flex: 1 1 40%;
+  border-radius: 8px;
+}
+
+.recipe-text {
+  flex: 1 1 55%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Responsive layout for mobile screens */
+@media (max-width: 600px) {
+  main {
+    padding: 1rem 1.2rem;
+    max-width: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  label {
+    font-size: 18px;
+  }
+
+  input[type="text"],
+  textarea {
+    font-size: 16px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .recipe-entry {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .recipe-text {
+    flex: 1 1 100%;
+  }
+
+  .recipe-entry img {
+    margin-bottom: 1rem;
+  }
+
+  .button-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+}
