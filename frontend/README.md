@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Frontend
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.3.
@@ -6,55 +5,11 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 ## Development server
 
 To start a local development server, run:
-=======
-# Recipe Organizer
-
-An Angular web application to organize and manage personal recipes.
-
-## Features
-
-- Add, edit, and delete recipes
-- Upload images for each recipe
-- User-friendly interface
-- Responsive layout
-
-## Technologies Used
-
-- Angular
-- TypeScript
-- HTML & CSS
-- (Optional) Backend: [Add backend tech if applicable]
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js and npm installed
-- Angular CLI installed globally
-
-### Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/JessicaMillet/recipe-organizer.git
-cd recipe-organizer
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-3. Run the development server:
->>>>>>> 59c59c6518bb18e6ae5498f3ecb72e9a383f5b51
 
 ```bash
 ng serve
 ```
 
-<<<<<<< HEAD
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
 ## Code scaffolding
@@ -102,21 +57,3 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
-=======
-4. Open your browser and navigate to:
-
-```
-http://localhost:4200
-```
-
-
-## Future Improvements
-
-- User authentication
-
-- Recipe categories
-
-- Search functionality
-
-- Save recipes to a database
->>>>>>> 59c59c6518bb18e6ae5498f3ecb72e9a383f5b51
