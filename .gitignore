@@ -1,5 +1,8 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+# Ignore Angular cache in frontend folder
+/frontend/.angular/cache/
+
 # Compiled output
 /dist
 /tmp
@@ -54,6 +57,11 @@ Thumbs.db
 
 # If you have any local environment override files or secrets in backend
 /backend/.env
+
+/uploads/*
+!/uploads/.gitkeep
+
+frontend/.angular/cache/
 
 # Sometimes lock files in node_modules can be ignored but generally commit package-lock.json
 

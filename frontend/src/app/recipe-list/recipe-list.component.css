@@ -1,5 +1,122 @@
+/* Reset list styles */
 ul {
   list-style-type: none;
   padding: 0;
   margin: 0;
+}
+
+/* Header and Logout Button */
+h2 {
+  margin-bottom: 20px;
+}
+
+button.logout {
+  float: right;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+
+/* Upload Button */
+.upload-btn {
+  cursor: pointer;
+  color: #007bff;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.upload-btn i {
+  margin-right: 4px;
+}
+
+/* Error Messages */
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+/* Recipe Entry Layout */
+.recipe-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+}
+
+.recipe-entry img {
+  width: 150px;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* Recipe Text Content */
+.recipe-text {
+  flex: 1;
+}
+
+/* Search Input and Form Inputs */
+input[type="text"],
+input[type="file"],
+input:not([type="submit"]) {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+/* Button Group for Edit/View */
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Image preview */
+img[alt="Preview"] {
+  border-radius: 6px;
+  margin-top: 10px;
+  max-width: 200px;
+  height: auto;
+  display: block;
+}
+
+/* Recipe Title Style */
+.recipe-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin: 0 0 5px 0;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 600px) {
+  .recipe-entry {
+    flex-direction: column;
+  }
+
+  .recipe-entry img {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 10px;
+  }
+
+  button.logout {
+    float: none;
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+  }
 }
